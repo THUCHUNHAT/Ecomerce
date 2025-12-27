@@ -10,7 +10,8 @@ import java.time.LocalDateTime;
 @Getter
 public class MessageResponseDto {
     private int id;
-    private User user;
+    private String username;
+    private int setConversationId;
     private String content;
     private LocalDateTime createAt;
 }

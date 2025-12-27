@@ -20,8 +20,8 @@ public class MessageController {
         return messageService.sendMessage(messageRequestDto,authentication);
     }
 
-    @GetMapping
-    public ResponseEntity<ApiResponse> getMessage (Authentication authentication){
-        return messageService.getMessage(authentication);
+    @GetMapping ("/{conversationId}")
+    public ResponseEntity<ApiResponse> getMessage (Authentication authentication,@PathVariable int conversationId){
+        return messageService.getMessage(authentication, conversationId);
     }
 }

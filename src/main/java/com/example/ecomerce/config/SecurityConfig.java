@@ -30,7 +30,7 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
 
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/", "/login/**", "/oauth2/**", "/auth/google","/review/**","/product/RelatedProducts","/product/maxprice/**","/login","/order/**","/promotion","/promotion/**","/api/vnpay","/api/vnpay/return/**","/api/zalopay","/api/momo","/order-status/**","/Article","/Article/**","/registration","/registration/**","/forgotpass","/forgotpass/**","/login/oauth2/code/google","/product/**","/pet","/pet/**","/message").permitAll()
+                        .requestMatchers("/", "/login/**", "/oauth2/**", "/auth/google","/review/**","/product/RelatedProducts","/product/maxprice/**","/login","/order/**","/promotion","/promotion/**","/api/vnpay","/api/vnpay/return/**","/api/zalopay","/api/momo","/order-status/**","/Article","/Article/**","/registration","/registration/**","/forgotpass","/forgotpass/**","/login/oauth2/code/google","/product/**","/pet","/pet/**","/message","message/**").permitAll()
                         .requestMatchers("/review/**","/favorite","/favorite/**","/cart/**","/viewedrecently/**,/viewedrecently").authenticated()
                         .anyRequest().authenticated()
                 )

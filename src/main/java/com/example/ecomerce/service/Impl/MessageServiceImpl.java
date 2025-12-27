@@ -21,40 +21,39 @@ import java.util.List;
 @Service
 public class MessageServiceImpl implements MessageService {
 
-   @Autowired
-   private MessageRepository messageRepository;
+    @Autowired
+    private MessageRepository messageRepository;
 
-   @Autowired
-   private UserRepository userRepository;
+    @Autowired
+    private UserRepository userRepository;
 
-   @Override
-    public ResponseEntity<ApiResponse> sendMessage (MessageRequestDto messageRequestDto, Authentication authentication){
-       try {
-           if (authentication == null) {
-               return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ApiResponse("User not authenticated", null, ErrorUser.USER_NOT_AUTHENTICATED));
-           }
-           String username = authentication.getName();
-           User user = userRepository.findByUsername(username).orElse(null);
-           if (user == null){
-               return ResponseEntity.badRequest().body(new ApiResponse("user not found",null,"User_NOT_FOUND"));
-           }
+    @Override
+    public ResponseEntity<ApiResponse> sendMessage(MessageRequestDto messageRequestDto, Authentication authentication) {
+        try {
+            if (authentication == null) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ApiResponse("User not authenticated", null, ErrorUser.USER_NOT_AUTHENTICATED));
+            }
+            String username = authentication.getName();
+            User user = userRepository.findByUsername(username).orElse(null);
+            if (user == null) {
+                return ResponseEntity.badRequest().body(new ApiResponse("user not found", null, "User_NOT_FOUND"));
+            }
 
-           Message message = new Message();
-           message.setUser(user);
-           message.setConversationId(messageRequestDto.getConversationId());
-           message.setContent(messageRequestDto.getContent());
-           message.setCreateAt(LocalDateTime.now());
-           messageRepository.save(message);
-           return ResponseEntity.ok(new ApiResponse("Message sent successfully",null,"Success"));
-       }catch (Exception e) {
-           return ResponseEntity.badRequest().body(new ApiResponse("Something went wrong",null,"Error"));
-       }
+            Message message = new Message();
+            message.setUser(user);
+            message.setConversationId(messageRequestDto.getConversationId());
+            message.setContent(messageRequestDto.getContent());
+            message.setCreateAt(LocalDateTime.now());
+            messageRepository.save(message);
+            return ResponseEntity.ok(new ApiResponse("Message sent successfully", null, "Success"));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(new ApiResponse("Something went wrong", null, "Error"));
+        }
 
     }
 
     @Override
-    public ResponseEntity<ApiResponse> getMessage ( Authentication authentication) {
-
+    public ResponseEntity<ApiResponse> getMessage(Authentication authentication,int conversationId) {
         try {
             if (authentication == null) {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ApiResponse("User not authenticated", null, ErrorUser.USER_NOT_AUTHENTICATED));
@@ -64,12 +63,20 @@ public class MessageServiceImpl implements MessageService {
             if (user == null) {
                 return ResponseEntity.badRequest().body(new ApiResponse("user not found", null, "USER_NOT_FOUND"));
             }
-            List<Message> message = messageRepository.findByUser(user);
+            List<Message> message = messageRepository.findByConversationId(conversationId);
             if (message.isEmpty()) {
                 return ResponseEntity.badRequest().body(new ApiResponse("message not found", null, "MESSAGE_NOT_FOUND"));
             }
 
-            List<MessageResponseDto> messageResponseDtos = message.stream() .map(msg -> { MessageResponseDto dto = new MessageResponseDto(); dto.setUser(user); dto.setContent(msg.getContent()); dto.setCreateAt(msg.getCreateAt()); return dto; }) .toList();
+            List<MessageResponseDto> messageResponseDtos = message.stream().map(msg -> {
+                MessageResponseDto dto = new MessageResponseDto();
+                dto.setId(msg.getId());
+                dto.setUsername(msg.getUser().getUsername());
+                dto.setSetConversationId(msg.getConversationId());
+                dto.setContent(msg.getContent());
+                dto.setCreateAt(msg.getCreateAt());
+                return dto;
+            }).toList();
             return ResponseEntity.ok(new ApiResponse("show message success", messageResponseDtos, "Success"));
 
         } catch (Exception e) {

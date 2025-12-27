@@ -24,6 +24,9 @@ public class Article {
     @Column (name = "article_content")
     private String articleContent;
 
+    @Column (name ="article_category")
+    private String articleCategory;
+
     @Column( name = "create_at")
     private LocalDateTime createAt;
 }
