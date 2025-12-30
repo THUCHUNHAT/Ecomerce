@@ -5,7 +5,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
 public class EcomerceApplication {
-
+//	thu-dev-main
 	public static void main(String[] args) {
 		SpringApplication.run(EcomerceApplication.class, args);
 	}
